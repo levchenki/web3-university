@@ -47,9 +47,9 @@ describe('Poster', () => {
             const eventsAfter = await poster.getEvents.NewPost();
             const postedEvent = eventsAfter[0];
 
-            expect(postedEvent.args.user?.toLowerCase()).to.equal(owner.account.address.toLowerCase())
-            expect(postedEvent.args.content).to.equal(content)
-            expect(postedEvent.args.tag).to.equals(web3.utils.keccak256(tag))
+            expect(postedEvent.args.user?.toLowerCase()).to.equal(owner.account.address.toLowerCase());
+            expect(postedEvent.args.content).to.equal(content);
+            expect(postedEvent.args.tag).to.equals(web3.utils.keccak256(tag));
         });
-    })
-})
+    });
+});

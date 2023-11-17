@@ -20,14 +20,14 @@ describe('Token', () => {
 
     describe('Token creation', () => {
         it('Should assign balance when created', async () => {
-            const {token, owner} = await loadFixture(deployPosterFixture)
+            const {token, owner} = await loadFixture(deployPosterFixture);
 
-            const totalBalance = await token.read.totalSupply()
+            const totalBalance = await token.read.totalSupply();
 
-            const ownerAddress = owner.account.address
-            const ownerBalance = await token.read.balanceOf([ownerAddress]).then(BigInt)
+            const ownerAddress = owner.account.address;
+            const ownerBalance = await token.read.balanceOf([ownerAddress]).then(BigInt);
 
-            expect(totalBalance).to.equal(ownerBalance)
+            expect(totalBalance).to.equal(ownerBalance);
         });
 
         it('Should have 1 Transfer event after deploy', async () => {
@@ -40,17 +40,17 @@ describe('Token', () => {
 
     describe('Token transaction', () => {
         it('Should mint tokens', async () => {
-            const {token, owner, otherAccount} = await loadFixture(deployPosterFixture)
+            const {token, owner, otherAccount} = await loadFixture(deployPosterFixture);
 
-            const mintedAmount = 10n * BigInt(1e18)
-            const destinationAddress = otherAccount.account.address
+            const mintedAmount = 10n * BigInt(1e18);
+            const destinationAddress = otherAccount.account.address;
 
-            const tx = await token.write.mint([destinationAddress, mintedAmount], {account: owner.account})
+            const tx = await token.write.mint([destinationAddress, mintedAmount], {account: owner.account});
 
             expect(tx).not.empty;
 
-            const transferEvents = await token.getEvents.Transfer({to: destinationAddress})
-            const transactionLog = transferEvents[0]
+            const transferEvents = await token.getEvents.Transfer({to: destinationAddress});
+            const transactionLog = transferEvents[0];
 
             expect(transactionLog.eventName).to.equal('Transfer');
             expect(transactionLog.args.from).to.equal('0x0000000000000000000000000000000000000000');
@@ -58,7 +58,7 @@ describe('Token', () => {
             const destinationToLowerCase = transactionLog.args.to?.toLowerCase();
 
             expect(destinationToLowerCase).to.equal(destinationAddress);
-            expect(transactionLog.args.value).to.equal(mintedAmount)
+            expect(transactionLog.args.value).to.equal(mintedAmount);
 
             try {
                 await token.write.mint([destinationAddress, mintedAmount], {account: otherAccount.account});
@@ -67,5 +67,5 @@ describe('Token', () => {
                 expect(error).to.match(new RegExp('Ownable: caller is not the owner'));
             }
         });
-    })
-})
+    });
+});
