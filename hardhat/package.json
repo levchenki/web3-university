@@ -1,0 +1,23 @@
+{
+  "name": "poster-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "bunx hardhat test",
+    "compile": "bunx hardhat compile",
+    "deploy": "bunx hardhat run scripts/deployPoster.ts --network sepolia"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^1.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.0",
+    "web3": "^4.2.2"
+  },
+  "devDependencies": {
+    "@wagmi/cli": "^1.5.2"
+  }
+}
