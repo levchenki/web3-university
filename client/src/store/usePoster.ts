@@ -1,37 +1,41 @@
-import {create} from "zustand";
 import {PosterContract} from "../contracts/contracts.ts";
 import {IPoster, TPostEvent} from "../types/posterInterfaces.tsx";
 import {getAccount} from "../contracts/init.ts";
 import {encryptKeccak256} from "../utils/utils.ts";
+import {createWithEqualityFn} from "zustand/traditional";
+import {toast} from "react-toastify";
+import {devtools} from "zustand/middleware";
 
 
 interface PosterStore {
     postEvents: IPoster[];
-    tagFilter: string;
     filteredEvents: IPoster[];
+    tagFilter: string;
 
-    isLoading: boolean;
-    isListening: boolean,
+    isCreation: boolean;
 
     createPoster: (tag: string, content: string) => Promise<void>;
-
     updateNewPostEvents: () => Promise<void>;
     filterEvents: () => void;
+
+    isListening: boolean,
     listenEvents: () => Promise<void>;
+
     setTagFilter: (tagFilter: string) => void;
 }
 
-// todo validate messages and errors
-export const usePoster = create<PosterStore>((set, get) => ({
+
+export const usePoster = createWithEqualityFn<PosterStore>()(
+    devtools((set, get) => ({
     postEvents: [],
     tagFilter: '',
     filteredEvents: [],
 
     isListening: false,
-    isLoading: false,
+        isCreation: false,
 
     createPoster: async (tag: string, content: string) => {
-        set({isLoading: true})
+        set({isCreation: true})
         const account = await getAccount()
 
         if (!account) {
@@ -41,9 +45,10 @@ export const usePoster = create<PosterStore>((set, get) => ({
         await PosterContract.write.post([tag, content],
             {account: account})
             .catch(e => {
-                console.log(e)
-            }).finally(() => {
-                set({isLoading: false})
+                throw e
+            })
+            .finally(() => {
+                set({isCreation: false})
             })
     },
 
@@ -62,19 +67,23 @@ export const usePoster = create<PosterStore>((set, get) => ({
         if (get().isListening) {
             return
         }
-
+        set({isListening: true})
         PosterContract.watchEvent.NewPost({}, {
             onLogs: (logs) => {
                 logs.map(mapEventToPost).map(ne => {
-                    alert(`New post! ${ne.content}`)
+                    toast.success(`New post from ${ne.user}`)
+                    set({postEvents: [ne, ...get().postEvents]})
                 })
-                get().updateNewPostEvents()
+                get().filterEvents()
             }
         })
-        set({isListening: true})
     },
 
     filterEvents: () => {
+        if (get().tagFilter === '') {
+            set({filteredEvents: get().postEvents})
+            return
+        }
         const encryptedTag = encryptKeccak256(get().tagFilter)
         const filteredEvents = get().postEvents.filter(e => e.tag === encryptedTag)
         set({filteredEvents})
@@ -87,8 +96,7 @@ export const usePoster = create<PosterStore>((set, get) => ({
             return
         }
     }
-
-}))
+    })))
 
 const mapEventToPost = (event: TPostEvent): IPoster => {
     return {

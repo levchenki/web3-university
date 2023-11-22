@@ -1,6 +1,7 @@
-import {create} from "zustand";
 import {Address} from "abitype";
 import {getAccount, walletClient} from "../contracts/init.ts";
+import {createJSONStorage, persist} from "zustand/middleware";
+import {create} from "zustand";
 
 interface AccountStore {
     address?: Address;
@@ -8,11 +9,12 @@ interface AccountStore {
     isConnected: boolean;
 
     connect: () => Promise<void>;
-    reconnect: () => Promise<void>;
+    disconnect: () => Promise<void>;
 }
 
 
-export const useAccount = create<AccountStore>((set) => ({
+export const useAccount = create<AccountStore>()(
+    persist((set) => ({
     address: '' as Address,
     isLoading: false,
     isConnected: false,
@@ -20,10 +22,14 @@ export const useAccount = create<AccountStore>((set) => ({
         set({isLoading: true})
 
         await walletClient.requestAddresses().catch(e => {
-            alert(e)
+            throw e
         })
 
         const account = await getAccount()
+
+        if (!account) {
+            throw new Error('No account')
+        }
 
         set({
             isLoading: false,
@@ -31,13 +37,14 @@ export const useAccount = create<AccountStore>((set) => ({
             isConnected: !!account
         })
     },
-    reconnect: async () => {
-        const account = await getAccount()
-        if (account) {
+        disconnect: async () => {
             set({
-                address: account,
-                isConnected: true
+                address: '' as Address,
+                isConnected: false
             })
-        }
-    }
+        },
+
+    }), {
+        name: 'account-storage',
+        storage: createJSONStorage(() => localStorage)
 }))

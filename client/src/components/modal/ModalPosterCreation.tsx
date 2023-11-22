@@ -23,7 +23,7 @@ const postSchema = yup.object<IPostParams>().shape({
 })
 
 export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
-    const {createPoster, isLoading} = usePoster();
+    const {createPoster, isCreation} = usePoster();
     const {isConnected} = useAccount()
     const formik = useFormik<IPostParams>({
         initialValues: {
@@ -74,10 +74,10 @@ export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
                         Close
                     </Button>
                     <Button color="primary" type='submit'
-                            disabled={isLoading || !isConnected}
+                            disabled={isCreation || !isConnected}
                             onClick={() => formik.handleSubmit()}>
                         {
-                            isLoading ? <Spinner color='white' size='sm'/> : 'Post'
+                            isCreation ? <Spinner color='white' size='sm'/> : 'Post'
                         }
                     </Button>
                 </ModalFooter>
