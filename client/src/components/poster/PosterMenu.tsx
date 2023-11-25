@@ -2,10 +2,15 @@ import {FC} from "react";
 import {Button, Input, useDisclosure} from "@nextui-org/react";
 import {usePoster} from "../../store/usePoster.ts";
 import {ModalPosterCreation} from "../modal/ModalPosterCreation.tsx";
+import {shallow} from "zustand/shallow";
 
 export const PosterMenu: FC = () => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const {tagFilter, setTagFilter, filterEvents} = usePoster()
+    const {tagFilter, setTagFilter, filterEvents} = usePoster((state) => ({
+        tagFilter: state.tagFilter,
+        setTagFilter: state.setTagFilter,
+        filterEvents: state.filterEvents,
+    }), shallow)
 
     return <>
         <div className='flex items-center gap-5'>

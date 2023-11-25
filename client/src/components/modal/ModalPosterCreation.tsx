@@ -16,6 +16,7 @@ import * as yup from 'yup'
 import {IPostParams} from "../../types/posterInterfaces.tsx";
 import {useAccount} from "../../store/useAccount.ts";
 import {ModalProps} from "../../types/interfaces.ts";
+import {toast} from "react-toastify";
 
 const postSchema = yup.object<IPostParams>().shape({
     tag: yup.string().required(),
@@ -39,7 +40,7 @@ export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
             const tag = values.tag;
             const content = values.content;
 
-            await createPoster(tag, content)
+            await createPoster(tag, content).catch(e=>toast.error(e.message))
         },
     })
 

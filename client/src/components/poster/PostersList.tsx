@@ -1,18 +1,23 @@
 import {FC, useEffect} from "react";
 import {usePoster} from "../../store/usePoster.ts";
 import {PosterCard} from "./PosterCard.tsx";
+import {shallow} from "zustand/shallow";
+import {toast} from "react-toastify";
 
 export const PostersList: FC = () => {
-    const {filteredEvents, updateNewPostEvents, listenEvents} = usePoster()
+    const {filteredEvents, updateNewPostEvents, listenEvents} = usePoster(state => ({
+        filteredEvents: state.filteredEvents,
+        updateNewPostEvents: state.updateNewPostEvents,
+        listenEvents: state.listenEvents,
+    }), shallow)
 
     useEffect(() => {
-        updatePosts().catch(console.error)
-        listenEvents().catch(console.error)
-    }, []);
+        updateNewPostEvents().catch(e => toast.error(e.message))
+    }, [updateNewPostEvents]);
 
-    const updatePosts = async () => {
-        await updateNewPostEvents()
-    }
+    useEffect(() => {
+        listenEvents().catch(e => toast.error(e.message))
+    }, [listenEvents]);
 
     return <div className='flex flex-col gap-5'>
         {
