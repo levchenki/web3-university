@@ -5,15 +5,15 @@ import {Address} from "abitype";
 import {createWithEqualityFn} from "zustand/traditional";
 import {createJSONStorage, persist} from "zustand/middleware";
 import {toast} from "react-toastify";
+import {bigintToStr} from "../utils/utils.ts";
 
 interface BalanceStore {
     balance: bigint;
-    balanceString: string;
+    balanceStr: string;
     isTransferring: boolean;
     isTokenLoading: boolean;
 
     transfer: (amount: bigint, to: Address) => Promise<void>
-    setBalance: (balance: bigint) => void;
     updateBalance: () => Promise<void>;
 
     mint: (amount: bigint, to: Address) => Promise<void>;
@@ -23,16 +23,16 @@ interface BalanceStore {
     addDisplayToken: () => Promise<void>;
 }
 
-// todo string balance
+
 export const useToken = createWithEqualityFn<BalanceStore>()(
     persist((set, get) => ({
         balance: 0n,
-        balanceString: '0',
+        balanceStr: '0',
         isListening: false,
         isTransferring: false,
         isTokenLoading: false,
 
-        setBalance: (balance: bigint) => set({balance}),
+
         updateBalance: async () => {
             const address = await getAccount();
             if (!address) {
@@ -40,9 +40,9 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
             }
             const balance = await TokenContract.read.balanceOf([address]);
             set({
-                balance: balance ? BigInt(balance) : 0n,
-                balanceString: balance ? BigInt(balance).toString() : '0',
-            });
+                balance: balance,
+                balanceStr: bigintToStr(balance)
+            })
         },
 
         transfer: async (amount: bigint, to: Address) => {
@@ -102,16 +102,16 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
                     if (address === from) {
                         const balance = get().balance - value
                         set({
-                            balance: balance > 0n ? balance : 0n,
-                            balanceString: balance > 0n ? balance.toString() : '0'
+                            balance: balance,
+                            balanceStr: bigintToStr(balance)
                         })
                     }
 
                     if (address === to) {
                         const balance = get().balance + value
                         set({
-                            balance: balance > 0n ? balance : 0n,
-                            balanceString: balance > 0n ? balance.toString() : '0'
+                            balance: balance,
+                            balanceStr: bigintToStr(balance)
                         })
 
                     }
@@ -140,7 +140,7 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
         name: 'token',
         storage: createJSONStorage(() => localStorage),
         partialize: (state) => ({
-            balanceString: state.balanceString,
+            balanceStr: state.balanceStr,
             isTransferring: state.isTransferring,
             isTokenLoading: state.isTokenLoading,
         }),

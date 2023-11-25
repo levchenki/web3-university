@@ -22,7 +22,7 @@ import {useToken} from "../../store/useToken.ts";
 import {Address} from "abitype";
 import {ITransactionParams} from "../../types/tokenInterfaces.tsx";
 import {toast} from "react-toastify";
-import {parseStrToBigint} from "../../utils/utils.ts";
+import {strToBigint} from "../../utils/utils.ts";
 
 
 const postSchema = yup.object<ITransactionParams>().shape({
@@ -63,7 +63,7 @@ export const ModalTokenTransaction: FC<ModalProps> = ({onOpenChange, isOpen}) =>
             return errors
         },
         onSubmit: async (values) => {
-            const valueBigint = parseStrToBigint(values.value)
+            const valueBigint = strToBigint(values.value)
 
             if (selectedOption.has('mint'))
                 await mint(valueBigint, values.to).catch(e => {

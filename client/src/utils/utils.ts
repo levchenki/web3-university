@@ -14,13 +14,8 @@ export const encryptKeccak256 = (str: string) => {
     return keccak256(toHex(str));
 }
 
-// todo rework
-export const convertToken = (amount: bigint, decimals: number = 18) => {
-    const x = amount / BigInt(10 ** decimals)
-    return Number(x);
-}
 
-export const parseStrToBigint = (str: string, decimals: number = 18) => {
+export const strToBigint = (str: string, decimals: number = 18) => {
     const isDecimal = str.includes('.');
 
     if (isDecimal) {
@@ -38,26 +33,19 @@ export const parseStrToBigint = (str: string, decimals: number = 18) => {
     }
 }
 
-export const parseBigintToStr = (amount: bigint, decimals: number = 18) => {
-    const amountStr = amount.toString();
+export const bigintToStr = (amount: bigint | string, decimals: number = 18) => {
+    const amountStr = typeof amount === 'string' ? amount : amount.toString();
+
     const amountLength = amountStr.length;
 
     const wholePart = amountStr.slice(0, amountLength - decimals);
     const fractionalPart = amountStr.slice(amountLength - decimals, amountLength);
-
-    return `${wholePart}.${fractionalPart}`;
-}
-
-export const formatBigint = (amount?: string, decimals: number = 18) => {
-    if (!amount) return '0.000';
-
-    const amountLength = amount.length;
     const numsAfterDot = 3;
 
-    const wholePart = amount.slice(0, amountLength - decimals);
-    const fractionalPart = amount.slice(amountLength - decimals, amountLength - decimals + numsAfterDot);
+    const truncatedFractionalPart = fractionalPart.slice(0, numsAfterDot);
 
-    return `${wholePart}.${fractionalPart}`;
+    return `${wholePart}.${truncatedFractionalPart}`;
 }
+
 
 export const sepoliaEtherscanURL = 'https://sepolia.etherscan.io'

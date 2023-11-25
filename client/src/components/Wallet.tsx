@@ -1,6 +1,6 @@
 import {FC, useEffect} from "react";
 import {useAccount} from "../store/useAccount.ts";
-import {formatBigint, sliceAddress} from "../utils/utils.ts";
+import {sliceAddress} from "../utils/utils.ts";
 import {Avatar, Button, useDisclosure} from "@nextui-org/react";
 import {useToken} from "../store/useToken.ts";
 import {ModalTokenTransaction} from "./modal/ModalTokenTransaction.tsx";
@@ -13,7 +13,7 @@ export const Wallet: FC = () => {
         isConnected: state.isConnected,
     }))
     const {balanceString, addDisplayToken, updateBalance, isTokenLoading} = useToken((state) => ({
-        balanceString: state.balanceString,
+        balanceString: state.balanceStr,
         addDisplayToken: state.addDisplayToken,
         updateBalance: state.updateBalance,
         isTokenLoading: state.isTokenLoading,
@@ -38,7 +38,7 @@ export const Wallet: FC = () => {
                                 isTokenLoading ? <h3 className='text-default-400 font-italic text-sm'>Loading...</h3>
                                     :
                                     <h3 className='text-default-400 font-italic text-sm'>
-                                        {formatBigint(balanceString)} PDG
+                                        {balanceString} PDG
                                     </h3>
                             }
                         </div>
