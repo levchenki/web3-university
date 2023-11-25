@@ -3,6 +3,8 @@ import {TokenContract} from "../contracts/contracts.ts";
 import {getAccount} from "../contracts/init.ts";
 import {Address} from "abitype";
 import {createWithEqualityFn} from "zustand/traditional";
+import {createJSONStorage, persist} from "zustand/middleware";
+import {toast} from "react-toastify";
 
 interface BalanceStore {
     balance: bigint;
@@ -16,16 +18,14 @@ interface BalanceStore {
 
     mint: (amount: bigint, to: Address) => Promise<void>;
 
-    isListening: boolean;
     listenTransactions: () => Promise<void>;
 
     addDisplayToken: () => Promise<void>;
 }
 
-// todo add persist
 // todo string balance
 export const useToken = createWithEqualityFn<BalanceStore>()(
-    (set, get) => ({
+    persist((set, get) => ({
         balance: 0n,
         balanceString: '0',
         isListening: false,
@@ -88,11 +88,10 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
 
         listenTransactions: async () => {
             const address = await getAccount();
-            if (!address || get().isListening) {
-                return
+            if (!address) {
+                return;
             }
 
-            set({isListening: true})
             TokenContract.watchEvent.Transfer({}, {
                 onLogs: (logs) => logs.map(log => {
                     const {from, to, value} = log.args
@@ -137,4 +136,15 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
                 },
             });
         },
+    }), {
+        name: 'token',
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+            balanceString: state.balanceString,
+            isTransferring: state.isTransferring,
+            isTokenLoading: state.isTokenLoading,
+        }),
+        onRehydrateStorage: (state) => {
+            state.listenTransactions().catch(e => toast.error(e.message))
+        }
     }));

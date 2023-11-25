@@ -5,19 +5,14 @@ import {shallow} from "zustand/shallow";
 import {toast} from "react-toastify";
 
 export const PostersList: FC = () => {
-    const {filteredEvents, updateNewPostEvents, listenEvents} = usePoster(state => ({
+    const {filteredEvents, updateNewPostEvents} = usePoster(state => ({
         filteredEvents: state.filteredEvents,
         updateNewPostEvents: state.updateNewPostEvents,
-        listenEvents: state.listenEvents,
     }), shallow)
 
     useEffect(() => {
         updateNewPostEvents().catch(e => toast.error(e.message))
     }, [updateNewPostEvents]);
-
-    useEffect(() => {
-        listenEvents().catch(e => toast.error(e.message))
-    }, [listenEvents]);
 
     return <div className='flex flex-col gap-5'>
         {

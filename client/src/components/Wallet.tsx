@@ -12,20 +12,12 @@ export const Wallet: FC = () => {
         address: state.address,
         isConnected: state.isConnected,
     }))
-    const {balanceString, addDisplayToken, updateBalance, listenTransactions, isTokenLoading} = useToken((state) => ({
+    const {balanceString, addDisplayToken, updateBalance, isTokenLoading} = useToken((state) => ({
         balanceString: state.balanceString,
         addDisplayToken: state.addDisplayToken,
         updateBalance: state.updateBalance,
-        listenTransactions: state.listenTransactions,
         isTokenLoading: state.isTokenLoading,
     }))
-
-    useEffect(() => {
-        if (!isConnected)
-            return
-
-        listenTransactions().catch(console.error)
-    }, [listenTransactions, isConnected]);
 
     useEffect(() => {
         if (!isConnected)

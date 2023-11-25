@@ -37,10 +37,9 @@ export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
         },
         validationSchema: postSchema,
         onSubmit: async (values) => {
-            const tag = values.tag;
             const content = values.content;
-
-            await createPoster(tag, content).catch(e=>toast.error(e.message))
+            const tag = values.tag;
+            await createPoster(content, tag).catch(e => toast.error(e.message))
         },
     })
 
