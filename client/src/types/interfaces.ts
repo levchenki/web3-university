@@ -1,6 +1,6 @@
 export interface ModalProps {
-    isOpen: boolean
-    onOpenChange: () => void
+    isOpen: boolean;
+    onOpenChange: () => void;
 }
 
-export type PosterMode = 'free' | 'gated'
+export type PosterMode = 'free' | 'gated';
