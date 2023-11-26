@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "dotenv -e ../.env -c -- vite",
         "build": "tsc && vite build",
-        "generate": "dotenv -e ../.env -c -- bunx @wagmi/cli generate",
+        "generate": "dotenv -e ../.env -c -- npx @wagmi/cli generate",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview"
     },

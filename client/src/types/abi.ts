@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x43359E2f7Ef8d5C1E32B3DEc667cb20d267604a1)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x4fceb84b4f8af989fb4e739b072e0192d13fcc71)
  */
 export const gatedPosterABI = [
     {
@@ -18,24 +18,9 @@ export const gatedPosterABI = [
         type: 'event',
         anonymous: false,
         inputs: [
-            {
-                name: 'user',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'content',
-                internalType: 'string',
-                type: 'string',
-                indexed: false,
-            },
-            {
-                name: 'tag',
-                internalType: 'string',
-                type: 'string',
-                indexed: true,
-            },
+            { name: 'user', internalType: 'address', type: 'address', indexed: true },
+            { name: 'content', internalType: 'string', type: 'string', indexed: false },
+            { name: 'tag', internalType: 'string', type: 'string', indexed: true },
         ],
         name: 'NewPost',
     },
@@ -43,18 +28,8 @@ export const gatedPosterABI = [
         type: 'event',
         anonymous: false,
         inputs: [
-            {
-                name: 'previousOwner',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'newOwner',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
+            { name: 'previousOwner', internalType: 'address', type: 'address', indexed: true },
+            { name: 'newOwner', internalType: 'address', type: 'address', indexed: true },
         ],
         name: 'OwnershipTransferred',
     },
@@ -85,13 +60,7 @@ export const gatedPosterABI = [
     {
         stateMutability: 'nonpayable',
         type: 'function',
-        inputs: [
-            {
-                name: '_newTokenAddress',
-                internalType: 'address',
-                type: 'address',
-            },
-        ],
+        inputs: [{ name: '_newTokenAddress', internalType: 'address', type: 'address' }],
         name: 'setTokenAddress',
         outputs: [],
     },
@@ -119,50 +88,32 @@ export const gatedPosterABI = [
 ] as const;
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x43359E2f7Ef8d5C1E32B3DEc667cb20d267604a1)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x4fceb84b4f8af989fb4e739b072e0192d13fcc71)
  */
 export const gatedPosterAddress = {
-    11155111: '0x43359E2f7Ef8d5C1E32B3DEc667cb20d267604a1',
+    11155111: '0x4fCEB84b4f8aF989FB4E739b072e0192D13fCC71',
 } as const;
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x43359E2f7Ef8d5C1E32B3DEc667cb20d267604a1)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x4fceb84b4f8af989fb4e739b072e0192d13fcc71)
  */
-export const gatedPosterConfig = {
-    address: gatedPosterAddress,
-    abi: gatedPosterABI,
-} as const;
+export const gatedPosterConfig = { address: gatedPosterAddress, abi: gatedPosterABI } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Poster
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x325547F6F5f3d3Bf974f1C1B2C283F56445e48eB)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x57f971e3930a16d95804a542dd7c05c772ab5ff4)
  */
 export const posterABI = [
     {
         type: 'event',
         anonymous: false,
         inputs: [
-            {
-                name: 'user',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'content',
-                internalType: 'string',
-                type: 'string',
-                indexed: false,
-            },
-            {
-                name: 'tag',
-                internalType: 'string',
-                type: 'string',
-                indexed: true,
-            },
+            { name: 'user', internalType: 'address', type: 'address', indexed: true },
+            { name: 'content', internalType: 'string', type: 'string', indexed: false },
+            { name: 'tag', internalType: 'string', type: 'string', indexed: true },
         ],
         name: 'NewPost',
     },
@@ -179,14 +130,14 @@ export const posterABI = [
 ] as const;
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x325547F6F5f3d3Bf974f1C1B2C283F56445e48eB)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x57f971e3930a16d95804a542dd7c05c772ab5ff4)
  */
 export const posterAddress = {
-    11155111: '0x325547F6F5f3d3Bf974f1C1B2C283F56445e48eB',
+    11155111: '0x57f971E3930a16d95804A542DD7C05c772ab5ff4',
 } as const;
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x325547F6F5f3d3Bf974f1C1B2C283F56445e48eB)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x57f971e3930a16d95804a542dd7c05c772ab5ff4)
  */
 export const posterConfig = { address: posterAddress, abi: posterABI } as const;
 
@@ -195,7 +146,7 @@ export const posterConfig = { address: posterAddress, abi: posterABI } as const;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x8b0F4DA7ad4497134F920C886be456ae468a1714)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x4a297c2a28b87b1193cfd4326a63348382f1dcf1)
  */
 export const tokenABI = [
     {
@@ -211,24 +162,9 @@ export const tokenABI = [
         type: 'event',
         anonymous: false,
         inputs: [
-            {
-                name: 'owner',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'spender',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'value',
-                internalType: 'uint256',
-                type: 'uint256',
-                indexed: false,
-            },
+            { name: 'owner', internalType: 'address', type: 'address', indexed: true },
+            { name: 'spender', internalType: 'address', type: 'address', indexed: true },
+            { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
         ],
         name: 'Approval',
     },
@@ -236,18 +172,8 @@ export const tokenABI = [
         type: 'event',
         anonymous: false,
         inputs: [
-            {
-                name: 'previousOwner',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'newOwner',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
+            { name: 'previousOwner', internalType: 'address', type: 'address', indexed: true },
+            { name: 'newOwner', internalType: 'address', type: 'address', indexed: true },
         ],
         name: 'OwnershipTransferred',
     },
@@ -255,24 +181,9 @@ export const tokenABI = [
         type: 'event',
         anonymous: false,
         inputs: [
-            {
-                name: 'from',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'to',
-                internalType: 'address',
-                type: 'address',
-                indexed: true,
-            },
-            {
-                name: 'value',
-                internalType: 'uint256',
-                type: 'uint256',
-                indexed: false,
-            },
+            { name: 'from', internalType: 'address', type: 'address', indexed: true },
+            { name: 'to', internalType: 'address', type: 'address', indexed: true },
+            { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
         ],
         name: 'Transfer',
     },
@@ -379,13 +290,13 @@ export const tokenABI = [
 ] as const;
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x8b0F4DA7ad4497134F920C886be456ae468a1714)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x4a297c2a28b87b1193cfd4326a63348382f1dcf1)
  */
 export const tokenAddress = {
-    11155111: '0x8b0F4DA7ad4497134F920C886be456ae468a1714',
+    11155111: '0x4a297c2A28b87B1193cFd4326A63348382F1dcF1',
 } as const;
 
 /**
- * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x8b0F4DA7ad4497134F920C886be456ae468a1714)
+ * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x4a297c2a28b87b1193cfd4326a63348382f1dcf1)
  */
 export const tokenConfig = { address: tokenAddress, abi: tokenABI } as const;
