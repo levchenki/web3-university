@@ -23,6 +23,7 @@ import {Address} from "abitype";
 import {ITransactionParams} from "../../types/tokenInterfaces.tsx";
 import {toast} from "react-toastify";
 import {strToBigint} from "../../utils/utils.ts";
+import {MdArrowDropDown} from "react-icons/md";
 
 
 const postSchema = yup.object<ITransactionParams>().shape({
@@ -31,12 +32,12 @@ const postSchema = yup.object<ITransactionParams>().shape({
 })
 
 // todo success message
-// todo refactor selectedOption
 export const ModalTokenTransaction: FC<ModalProps> = ({onOpenChange, isOpen}) => {
-    const {transfer, isTransferring, mint} = useToken(state => ({
+    const {transfer, isTransferring, mint, isOwner} = useToken(state => ({
         transfer: state.transfer,
         mint: state.mint,
         isTransferring: state.isTransferring,
+        isOwner: state.isOwner,
     }))
     const {isConnected} = useAccount(state => ({
         isConnected: state.isConnected,
@@ -65,14 +66,16 @@ export const ModalTokenTransaction: FC<ModalProps> = ({onOpenChange, isOpen}) =>
         onSubmit: async (values) => {
             const valueBigint = strToBigint(values.value)
 
-            if (selectedOption.has('mint'))
+            if (selectedOption.has('mint')) {
                 await mint(valueBigint, values.to).catch(e => {
                     toast.error(e.message)
                 })
-            else {
+                toast.success(`Minted to ${values.to}`)
+            } else {
                 await transfer(valueBigint, values.to).catch(e => {
                     toast.error(e.message)
                 })
+                toast.success(`Transferred to ${values.to}`)
             }
         },
     })
@@ -90,7 +93,9 @@ export const ModalTokenTransaction: FC<ModalProps> = ({onOpenChange, isOpen}) =>
     return <Modal isOpen={isOpen} onOpenChange={handleReset}>
         <ModalContent>
             <FormikProvider value={formik}>
-                <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">
+                    Token {selectedOption.has('transfer') ? 'transfer' : 'minting'}
+                </ModalHeader>
                 <ModalBody>
                     <Input
                         {...formik.getFieldProps('to')}
@@ -118,29 +123,31 @@ export const ModalTokenTransaction: FC<ModalProps> = ({onOpenChange, isOpen}) =>
                             {
                                 isTransferring && <Spinner color='white' size='sm'/>
                             }
-                            {selectedOption.has('mint') ? 'Mint' : 'Transfer'}
+                            {selectedOption.has('transfer') ? 'Transfer' : 'Mint'}
                         </Button>
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button isIconOnly color="primary">
-                                    *
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Merge options"
-                                selectedKeys={selectedOption}
-                                selectionMode="single"
-                                onSelectionChange={(keys) => setSelectedOption(keys as TOption)}
-                                className="max-w-[350px]">
-                                <DropdownItem key="transfer">
-                                    transfer
-                                </DropdownItem>
-                                <DropdownItem key="mint">
-                                    mint
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
+                        {
+                            isOwner && <Dropdown placement="bottom-end">
+                                <DropdownTrigger>
+                                    <Button isIconOnly color="primary">
+                                        <MdArrowDropDown/>
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    disallowEmptySelection
+                                    aria-label="Merge options"
+                                    selectedKeys={selectedOption}
+                                    selectionMode="single"
+                                    onSelectionChange={(keys) => setSelectedOption(keys as TOption)}
+                                    className="max-w-[350px]">
+                                    <DropdownItem key="transfer">
+                                        Transfer
+                                    </DropdownItem>
+                                    <DropdownItem key="mint">
+                                        Mint
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        }
                     </ButtonGroup>
                 </ModalFooter>
             </FormikProvider>

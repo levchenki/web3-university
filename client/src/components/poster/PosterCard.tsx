@@ -4,7 +4,7 @@ import {Card, CardBody, CardHeader, Divider, Link} from "@nextui-org/react";
 import {sepoliaEtherscanURL, sliceAddress} from "../../utils/utils.ts";
 import {Address} from "abitype";
 
-// todo rewrite address slicing
+
 export const PosterCard: FC<IPoster> = (poster) => {
     const {content, transactionHash, user} = poster
 

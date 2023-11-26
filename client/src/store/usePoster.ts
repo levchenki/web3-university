@@ -10,24 +10,20 @@ import {persist} from "zustand/middleware";
 interface PosterStore {
     postEvents: IPoster[];
     filteredEvents: IPoster[];
-    tagFilter: string;
 
     isCreation: boolean;
 
     createPoster: (tag: string, content: string) => Promise<void>;
     updateNewPostEvents: () => Promise<void>;
-    filterEvents: () => void;
+    filterEvents: (filter: string) => void;
 
     listenEvents: () => Promise<void>;
-
-    setTagFilter: (tagFilter: string) => void;
 }
 
 
 export const usePoster = createWithEqualityFn<PosterStore>()(
     persist((set, get) => ({
         postEvents: [],
-        tagFilter: '',
         filteredEvents: [],
 
         isCreation: false,
@@ -64,33 +60,24 @@ export const usePoster = createWithEqualityFn<PosterStore>()(
         listenEvents: async () => {
             PosterContract.watchEvent.NewPost({}, {
                 onLogs: (logs) => {
-                    console.log('NewPost')
                     logs.map(mapEventToPost).map(ne => {
                         toast.success(`New post from ${ne.user}`)
                         set({postEvents: [ne, ...get().postEvents]})
                     })
-                    get().filterEvents()
+                    get().filterEvents('')
                 }
             })
         },
 
-        filterEvents: () => {
-            if (get().tagFilter === '') {
+        filterEvents: (filter: string) => {
+            if (filter === '') {
                 set({filteredEvents: get().postEvents})
                 return
             }
-            const encryptedTag = encryptKeccak256(get().tagFilter)
+            const encryptedTag = encryptKeccak256(filter)
             const filteredEvents = get().postEvents.filter(e => e.tag === encryptedTag)
             set({filteredEvents})
         },
-
-        setTagFilter: (tagFilter: string) => {
-            set({tagFilter});
-            if (tagFilter === '') {
-                set({filteredEvents: get().postEvents})
-                return
-            }
-        }
     }), {
         name: 'poster-storage',
         onRehydrateStorage: (state) => {

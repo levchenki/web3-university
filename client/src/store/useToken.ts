@@ -13,12 +13,16 @@ interface BalanceStore {
     isTransferring: boolean;
     isTokenLoading: boolean;
 
+
     transfer: (amount: bigint, to: Address) => Promise<void>
     updateBalance: () => Promise<void>;
 
     mint: (amount: bigint, to: Address) => Promise<void>;
 
     listenTransactions: () => Promise<void>;
+
+    isOwner: boolean;
+    setOwner: () => Promise<void>;
 
     addDisplayToken: () => Promise<void>;
 }
@@ -31,7 +35,7 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
         isListening: false,
         isTransferring: false,
         isTokenLoading: false,
-
+        isOwner: false,
 
         updateBalance: async () => {
             const address = await getAccount();
@@ -41,7 +45,7 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
             const balance = await TokenContract.read.balanceOf([address]);
             set({
                 balance: balance,
-                balanceStr: bigintToStr(balance)
+                balanceStr: bigintToStr(balance),
             })
         },
 
@@ -119,6 +123,16 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
             })
         },
 
+        setOwner: async () => {
+            const address = await getAccount();
+            if (!address) {
+                return;
+            }
+
+            const owner = await TokenContract.read.owner()
+            set({isOwner: owner === address})
+        },
+
         addDisplayToken: async () => {
             if (!window.ethereum) {
                 throw new Error('No ethereum provider')
@@ -145,6 +159,7 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
             isTokenLoading: state.isTokenLoading,
         }),
         onRehydrateStorage: (state) => {
+            state.setOwner().catch(e => toast.error(e.message))
             state.listenTransactions().catch(e => toast.error(e.message))
         }
     }));

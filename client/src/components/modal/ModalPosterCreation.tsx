@@ -1,6 +1,7 @@
 import {FC} from "react";
 import {
     Button,
+    Chip,
     Input,
     Modal,
     ModalBody,
@@ -17,6 +18,11 @@ import {IPostParams} from "../../types/posterInterfaces.tsx";
 import {useAccount} from "../../store/useAccount.ts";
 import {ModalProps} from "../../types/interfaces.ts";
 import {toast} from "react-toastify";
+import {SwitchPoster} from "../SwitchPoster.tsx";
+import {useSwitchPoster} from "../../store/useSwitchPoster.ts";
+import {shallow} from "zustand/shallow";
+import {useGatedPoster} from "../../store/useGatedPoster.ts";
+import {useToken} from "../../store/useToken.ts";
 
 const postSchema = yup.object<IPostParams>().shape({
     tag: yup.string().required(),
@@ -24,8 +30,20 @@ const postSchema = yup.object<IPostParams>().shape({
 })
 
 export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
-    const {createPoster, isCreation} = usePoster();
-    const {isConnected} = useAccount()
+    const {createPoster, isCreation} = usePoster((state => ({
+        createPoster: state.createPoster,
+        isCreation: state.isCreation,
+    })), shallow);
+
+    const {createGatedPoster, isGatedCreation, threshold} = useGatedPoster((state => ({
+        createGatedPoster: state.createGatedPoster,
+        isGatedCreation: state.isGatedCreation,
+        threshold: state.threshold,
+    })), shallow);
+
+    const {isConnected} = useAccount();
+    const balance = useToken(state => state.balance);
+    const mode = useSwitchPoster(state => state.mode);
     const formik = useFormik<IPostParams>({
         initialValues: {
             tag: '',
@@ -39,9 +57,18 @@ export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
         onSubmit: async (values) => {
             const content = values.content;
             const tag = values.tag;
-            await createPoster(content, tag).catch(e => toast.error(e.message))
+
+            if (mode === 'gated') {
+                await createGatedPoster(content, tag).catch(e => toast.error(e.message))
+            } else {
+                await createPoster(content, tag).catch(e => toast.error(e.message))
+            }
         },
     })
+
+    const isGated = mode === 'gated';
+
+    const notEnoughBalance = isGated && threshold > balance;
 
     const handleReset = () => {
         formik.resetForm()
@@ -52,8 +79,16 @@ export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
     return <Modal isOpen={isOpen} onOpenChange={handleReset}>
         <ModalContent>
             <FormikProvider value={formik}>
-                <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-                <ModalBody>
+                <ModalHeader className="flex justify-between items-center mx-2">
+                    Poster creation
+                    <SwitchPoster/>
+                </ModalHeader>
+                <ModalBody className='items-center'>
+                    {
+                        notEnoughBalance && <Chip color='danger' variant='light'>
+                            Not enough PudgeCoins to create gated post.
+                        </Chip>
+                    }
                     <Input
                         {...formik.getFieldProps('tag')}
                         placeholder="Enter the tag"
@@ -74,10 +109,10 @@ export const ModalPosterCreation: FC<ModalProps> = ({onOpenChange, isOpen}) => {
                         Close
                     </Button>
                     <Button color="primary" type='submit'
-                            disabled={isCreation || !isConnected}
+                            disabled={isCreation || !isConnected || notEnoughBalance}
                             onClick={() => formik.handleSubmit()}>
                         {
-                            isCreation ? <Spinner color='white' size='sm'/> : 'Post'
+                            isCreation || isGatedCreation ? <Spinner color='white' size='sm'/> : 'Post'
                         }
                     </Button>
                 </ModalFooter>

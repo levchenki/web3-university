@@ -4,8 +4,9 @@ import {sliceAddress} from "../utils/utils.ts";
 import {Avatar, Button, useDisclosure} from "@nextui-org/react";
 import {useToken} from "../store/useToken.ts";
 import {ModalTokenTransaction} from "./modal/ModalTokenTransaction.tsx";
+import {MdCurrencyExchange, MdRemoveRedEye} from "react-icons/md";
 
-// todo rewrite
+
 export const Wallet: FC = () => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const {address, isConnected} = useAccount(state => ({
@@ -18,6 +19,7 @@ export const Wallet: FC = () => {
         updateBalance: state.updateBalance,
         isTokenLoading: state.isTokenLoading,
     }))
+
 
     useEffect(() => {
         if (!isConnected)
@@ -47,16 +49,18 @@ export const Wallet: FC = () => {
                 <Button isIconOnly
                         size='sm'
                         variant='flat'
+                        color='secondary'
                         disabled={!isConnected}
                         onClick={onOpen}>
-                    Send
+                    <MdCurrencyExchange/>
                 </Button>
                 <Button isIconOnly
                         size='sm'
                         variant='flat'
+                        color='secondary'
                         disabled={!isConnected}
                         onClick={addDisplayToken}>
-                    S
+                    <MdRemoveRedEye/>
                 </Button>
             </div>
             <ModalTokenTransaction isOpen={isOpen} onOpenChange={onOpenChange}/>
