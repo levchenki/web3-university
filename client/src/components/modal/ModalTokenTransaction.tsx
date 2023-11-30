@@ -30,7 +30,6 @@ const postSchema = yup.object<ITransactionParams>().shape({
     value: yup.number().required('Required').positive('Must be positive'),
 });
 
-// todo success message
 export const ModalTokenTransaction: FC<ModalProps> = ({ onOpenChange, isOpen }) => {
     const { transfer, isTransferring, mint, getIsOwner } = useToken((state) => ({
         transfer: state.transfer,
@@ -67,15 +66,21 @@ export const ModalTokenTransaction: FC<ModalProps> = ({ onOpenChange, isOpen }) 
             const valueBigint = strToBigint(values.value);
 
             if (selectedOption.has('mint')) {
-                await mint(valueBigint, values.to).catch((e) => {
-                    toast.error(e.message);
-                });
-                toast.success(`Minted to ${values.to}`);
+                await mint(valueBigint, values.to)
+                    .then(() => {
+                        toast.success(`Minted to ${values.to}`);
+                    })
+                    .catch((e) => {
+                        toast.error(e.message);
+                    });
             } else {
-                await transfer(valueBigint, values.to).catch((e) => {
-                    toast.error(e.message);
-                });
-                toast.success(`Transferred to ${values.to}`);
+                await transfer(valueBigint, values.to)
+                    .then(() => {
+                        toast.success(`Transferred to ${values.to}`);
+                    })
+                    .catch((e) => {
+                        toast.error(e.message);
+                    });
             }
         },
     });
