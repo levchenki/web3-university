@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
     Button,
     ButtonGroup,
@@ -32,12 +32,14 @@ const postSchema = yup.object<ITransactionParams>().shape({
 
 // todo success message
 export const ModalTokenTransaction: FC<ModalProps> = ({ onOpenChange, isOpen }) => {
-    const { transfer, isTransferring, mint, isOwner } = useToken((state) => ({
+    const { transfer, isTransferring, mint, getIsOwner } = useToken((state) => ({
         transfer: state.transfer,
         mint: state.mint,
         isTransferring: state.isTransferring,
-        isOwner: state.isOwner,
+        getIsOwner: state.getIsOwner,
     }));
+    const [isOwner, setIsOwner] = useState(false);
+
     const { isConnected } = useAccount((state) => ({
         isConnected: state.isConnected,
     }));
@@ -87,6 +89,12 @@ export const ModalTokenTransaction: FC<ModalProps> = ({ onOpenChange, isOpen }) 
     const handleSubmit = () => {
         formik.handleSubmit();
     };
+
+    useEffect(() => {
+        getIsOwner()
+            .then(setIsOwner)
+            .catch((e) => toast.error(e.message));
+    }, [getIsOwner]);
 
     return (
         <Modal isOpen={isOpen} onOpenChange={handleReset}>
