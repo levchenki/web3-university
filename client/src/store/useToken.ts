@@ -20,8 +20,7 @@ interface BalanceStore {
 
     listenTransactions: () => Promise<void>;
 
-    isOwner: boolean;
-    setOwner: () => Promise<void>;
+    getIsOwner: () => Promise<boolean>;
 
     addDisplayToken: () => Promise<void>;
 }
@@ -34,7 +33,6 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
             isListening: false,
             isTransferring: false,
             isTokenLoading: false,
-            isOwner: false,
 
             updateBalance: async () => {
                 const address = await getAccount();
@@ -127,14 +125,14 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
                 );
             },
 
-            setOwner: async () => {
+            getIsOwner: async () => {
                 const address = await getAccount();
                 if (!address) {
-                    return;
+                    return false;
                 }
 
                 const owner = await TokenContract.read.owner();
-                set({ isOwner: owner === address });
+                return owner ? owner === address : false;
             },
 
             addDisplayToken: async () => {
@@ -164,7 +162,6 @@ export const useToken = createWithEqualityFn<BalanceStore>()(
                 isTokenLoading: state.isTokenLoading,
             }),
             onRehydrateStorage: (state) => {
-                state.setOwner().catch((e) => toast.error(e.message));
                 state.listenTransactions().catch((e) => toast.error(e.message));
             },
         },

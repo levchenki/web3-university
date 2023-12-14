@@ -65,9 +65,19 @@ export const ModalPosterCreation: FC<ModalProps> = ({ onOpenChange, isOpen }) =>
             const tag = values.tag;
 
             if (mode === 'gated') {
-                await createGatedPoster(content, tag).catch((e) => toast.error(e.message));
+                await createGatedPoster(content, tag)
+                    .then(() => {
+                        toast.success('Gated poster created successfully');
+                        handleReset();
+                    })
+                    .catch((e) => toast.error(e.message));
             } else {
-                await createPoster(content, tag).catch((e) => toast.error(e.message));
+                await createPoster(content, tag)
+                    .then(() => {
+                        toast.success('Poster created successfully');
+                        handleReset();
+                    })
+                    .catch((e) => toast.error(e.message));
             }
         },
     });
